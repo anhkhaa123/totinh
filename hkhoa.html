@@ -1,0 +1,341 @@
+﻿﻿﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <title>Quà Tặng Đặc Biệt Cho Diễm Quỳnh 💖</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      margin: 0; padding: 0; box-sizing: border-box;
+    }
+    body, html {
+      height: 100vh;
+      background: linear-gradient(to bottom right, #ffd6e0, #ffe4ec);
+      font-family: 'Pacifico', cursive;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      perspective: 800px;
+      flex-direction: column;
+    }
+
+    /* Thanh loading */
+    #loadingScreen {
+      width: 300px;
+      height: 30px;
+      border-radius: 15px;
+      background: #f8bbd0;
+      overflow: hidden;
+      box-shadow: 0 0 10px #f48fb1;
+      margin-bottom: 20px;
+      position: relative;
+    }
+    #loadingBar {
+      height: 100%;
+      width: 0%;
+      background: #ff4081;
+      border-radius: 15px 0 0 15px;
+      transition: width 0.1s ease-out;
+      box-shadow: 0 0 10px #e91e63;
+    }
+    #loadingText {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      top: 0; left: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      color: white;
+      text-shadow: 1px 1px 3px #b71c1c;
+      font-size: 1.2rem;
+      user-select: none;
+    }
+
+    /* Hộp quà */
+    #giftBox {
+      width: 150px;
+      height: 150px;
+      background: linear-gradient(135deg, #ff6699, #ff3366);
+      border-radius: 20px;
+      box-shadow:
+        0 5px 15px rgba(255, 20, 147, 0.7),
+        inset 0 0 30px #ff77aa;
+      position: relative;
+      cursor: pointer;
+      display: none;
+      transform-style: preserve-3d;
+      transition: transform 0.6s ease;
+    }
+    /* Nắp hộp */
+    #giftBox::before {
+      content: "";
+      position: absolute;
+      top: -30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 30px;
+      background: linear-gradient(135deg, #ff99bb, #ff6699);
+      border-radius: 15px 15px 0 0;
+      box-shadow: 0 3px 10px rgba(255, 20, 147, 0.6);
+      transition: transform 0.6s ease;
+      transform-origin: bottom center;
+    }
+    /* Mở nắp hộp */
+    #giftBox.open::before {
+      transform: translateX(-50%) rotateX(-90deg);
+    }
+
+    /* Hộp nhập mật khẩu */
+    #passwordPrompt {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+    }
+    #passwordInput {
+      padding: 10px 15px;
+      border-radius: 10px;
+      border: 2px solid #ff4081;
+      font-size: 1.2rem;
+      font-family: 'Pacifico', cursive;
+      outline: none;
+      width: 250px;
+      text-align: center;
+      margin-bottom: 10px;
+      box-shadow: 0 0 8px #e91e63;
+    }
+    #passwordBtn {
+      background: #ff4081;
+      border: none;
+      border-radius: 25px;
+      color: white;
+      font-size: 1.2rem;
+      padding: 10px 30px;
+      cursor: pointer;
+      box-shadow: 0 4px 8px rgba(255, 64, 129, 0.7);
+      font-family: 'Pacifico', cursive;
+      transition: background-color 0.3s ease;
+    }
+    #passwordBtn:hover {
+      background: #e91e63;
+    }
+    #passwordMessage {
+      color: #d32f2f;
+      font-weight: bold;
+      margin-top: 8px;
+      min-height: 1.2rem;
+    }
+
+    /* Phần thân (ẩn ban đầu) */
+    #mainContent {
+      display: none;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      color: #ff4081;
+      font-family: 'Pacifico', cursive;
+      perspective: 1000px;
+      margin-top: 20px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      text-shadow:
+        1px 1px 0 #c71585,
+        2px 2px 5px rgba(255, 20, 147, 0.5);
+    }
+    .heart {
+      width: 120px;
+      height: 110px;
+      position: relative;
+      animation: float 3s ease-in-out infinite;
+    }
+    .heart::before,
+    .heart::after {
+      content: "";
+      position: absolute;
+      width: 120px;
+      height: 110px;
+      background: #ff3366;
+      border-radius: 50%;
+    }
+    .heart::before {
+      top: -60px;
+      left: 0;
+    }
+    .heart::after {
+      top: 0;
+      left: 60px;
+    }
+    .heart {
+      transform: rotate(-45deg);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: rotate(-45deg) translateY(0); }
+      50% { transform: rotate(-45deg) translateY(-10px); }
+    }
+
+    .message {
+      margin-top: 30px;
+      color: #ff4081;
+      font-size: 1.8rem;
+      line-height: 2.5rem;
+      text-shadow:
+        2px 2px 3px rgba(199, 21, 133, 0.7),
+        4px 4px 5px rgba(255, 20, 147, 0.4);
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+      perspective: 1000px;
+    }
+
+    .message p {
+      opacity: 0;
+      transform-style: preserve-3d;
+      transform-origin: center bottom;
+      transform: rotateX(90deg);
+      animation-fill-mode: forwards;
+      animation-timing-function: ease-out;
+      backface-visibility: hidden;
+    }
+
+    @keyframes flipIn {
+      0% {
+        opacity: 0;
+        transform: rotateX(90deg);
+      }
+      100% {
+        opacity: 1;
+        transform: rotateX(0deg);
+      }
+    }
+
+    /* Snow Effect */
+    .snowflake {
+      position: fixed;
+      top: -10px;
+      color: white;
+      font-size: 1em;
+      user-select: none;
+      z-index: 999;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(100vh) rotate(360deg); opacity: 0; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Loading screen -->
+  <div id="loadingScreen">
+    <div id="loadingBar"></div>
+    <div id="loadingText">0%</div>
+  </div>
+
+  <!-- Gift box -->
+  <div id="giftBox" title="Click để mở quà"></div>
+
+  <!-- Password prompt -->
+  <div id="passwordPrompt">
+    <input id="passwordInput" type="password" placeholder="Nhập mật khẩu..." />
+    <button id="passwordBtn">Mở quà</button>
+    <div id="passwordMessage"></div>
+  </div>
+
+  <!-- Main content -->
+  <div id="mainContent">
+    <h1>Gửi Diễm Quỳnh 💌</h1>
+    <div class="heart"></div>
+    <div class="message">
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 0.5s;">Winn iuuu cbee sieuu nhieuu 💕</p>
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 2.5s;">i lovee diem quynhhh 💘</p>
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 4.5s;">thuongggg cbeee 😘</p>
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 6.5s;">Chỉ cần là cbee, ngày nào cũng là lễ tình nhân 🫶</p>
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 8.5s;">Mỗi lần thấy cbee cười là tim em đập loạn 💓</p>
+      <p style="animation: flipIn 0.8s forwards; animation-delay: 10.5s;">Em chẳng cần gì cả, chỉ cần cbee mãi ở bên 🥰</p>
+    </div>
+  </div>
+
+  <script>
+    // Tạo tuyết rơi
+    function createSnowflake() {
+      const snowflake = document.createElement('div');
+      snowflake.classList.add('snowflake');
+      snowflake.textContent = '❄️';
+      snowflake.style.left = Math.random() * 100 + 'vw';
+      snowflake.style.fontSize = (Math.random() * 10 + 10) + 'px';
+      snowflake.style.animationDuration = (Math.random() * 5 + 5) + 's';
+      document.body.appendChild(snowflake);
+      setTimeout(() => snowflake.remove(), 10000);
+    }
+
+    // Bắt đầu tạo tuyết rơi sau khi hiện main content
+    let snowInterval;
+
+    // Load thanh loading chạy
+    const loadingBar = document.getElementById('loadingBar');
+    const loadingText = document.getElementById('loadingText');
+    const loadingScreen = document.getElementById('loadingScreen');
+    const giftBox = document.getElementById('giftBox');
+    const passwordPrompt = document.getElementById('passwordPrompt');
+    const passwordInput = document.getElementById('passwordInput');
+    const passwordBtn = document.getElementById('passwordBtn');
+    const passwordMessage = document.getElementById('passwordMessage');
+    const mainContent = document.getElementById('mainContent');
+
+    let loadPercent = 0;
+    const loadInterval = setInterval(() => {
+      loadPercent += 3;  // tăng đều 3% mỗi lần
+      if (loadPercent > 100) loadPercent = 100;
+      loadingBar.style.width = loadPercent + '%';
+      loadingText.textContent = loadPercent + '%';
+
+      if (loadPercent === 100) {
+        clearInterval(loadInterval);
+        // Ẩn loading, hiện hộp quà
+        loadingScreen.style.display = 'none';
+        giftBox.style.display = 'block';
+      }
+    }, 40);
+
+    // Khi click mở hộp quà
+    giftBox.addEventListener('click', () => {
+      giftBox.classList.add('open');
+      setTimeout(() => {
+        passwordPrompt.style.display = 'flex';
+        passwordInput.focus();
+      }, 700);  // sau khi mở nắp hộp
+    });
+
+    // Kiểm tra mật khẩu
+    passwordBtn.addEventListener('click', () => {
+      const pwd = passwordInput.value.trim();
+      if (pwd.toLowerCase() === 'diemquynh') {
+        passwordMessage.textContent = '';
+        passwordPrompt.style.display = 'none';
+        giftBox.style.display = 'none';
+        mainContent.style.display = 'flex';
+        // Bắt đầu rơi tuyết
+        snowInterval = setInterval(createSnowflake, 300);
+      } else {
+        passwordMessage.textContent = 'Mật khẩu sai rồi, thử lại nha!';
+      }
+    });
+
+    // Cho enter cũng kích hoạt mở quà
+    passwordInput.addEventListener('keyup', (e) => {
+      if (e.key === 'Enter') passwordBtn.click();
+    });
+  </script>
+
+</body>
+</html>
